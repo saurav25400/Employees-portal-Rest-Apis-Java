@@ -31,7 +31,7 @@ public class EmployeeController {
     public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable(name = "employeeId") Long id) {
         Optional<EmployeeDTO>empDto=employeeService.getEmployee(id);
 //        return empDto.map(emp->ResponseEntity.ok(emp)).orElse(ResponseEntity.notFound().build());
-        return empDto.map(emp->ResponseEntity.ok(emp)).orElseThrow(()-> new NoResourceFoundException("no resource is found with the given id"+id));
+        return empDto.map(emp->ResponseEntity.ok(emp)).orElseThrow(()-> new NoResourceFoundException("no resource is found with the given id "+id));
 
     }
 
@@ -42,18 +42,14 @@ public class EmployeeController {
 //        return new ResponseEntity<>("employee was not found",HttpStatus.NOT_FOUND);
 //    }
 
-
     @PostMapping(path = "employee")
     public ResponseEntity<EmployeeDTO> postdata( @Valid @RequestBody  EmployeeDTO employee) {
         return new ResponseEntity<>(employeeService.postEmployee(employee), HttpStatus.CREATED);
-
-
     }
 
     @PutMapping(path = "employee/update")
     public ResponseEntity<String> updateData(@RequestParam(name = "age", required = false) String Age, @RequestParam(name = "email", required = true) String email) {
         return ResponseEntity.ok(employeeService.updateData(Age, email));
-
     }
 
     @DeleteMapping(path = "employee/delete/{id}")
