@@ -1,6 +1,7 @@
 package codingShuttle.week2.mvc.Tutorials.advices;
 
 import codingShuttle.week2.mvc.Tutorials.CustomException.NoResourceFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.text.Collator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -35,6 +37,15 @@ public class GlobalHandlerException {
        return new ResponseEntity<>(apiError,HttpStatus.BAD_REQUEST);
 
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiError>inputPathAndQueryValidationException(ConstraintViolationException ex){
+        List<String>errorMessage=ex.getConstraintViolations().stream().map(violation->violation.getPropertyPath().toString()+violation.getMessage()).collect(Collectors.toList());
+        ApiError apiError=ApiError.builder().status(HttpStatus.BAD_REQUEST).message(errorMessage.toString()).error(null).build();
+        return new ResponseEntity<>(apiError,HttpStatus.BAD_REQUEST);   
+    }
+
+
 
 
 
